@@ -12,19 +12,42 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Track if pages have been visited before (same object reference as dashboard)
+const pageVisits = {
+  dashboard: false,
+  devices: false
+};
+
 export default function Devices() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [riskFilter, setRiskFilter] = useState("all");
-  const [loading, setLoading] = useState(true);
+  
+  // Check if this is first visit
+  const [isFirstVisit, setIsFirstVisit] = useState(!pageVisits.devices);
+  const [loading, setLoading] = useState(!pageVisits.devices); // Only load if first visit
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 5000);
-    return () => clearTimeout(timer);
+    // Mark as visited
+    if (!pageVisits.devices) {
+      pageVisits.devices = true;
+      
+      // Only show loading for first visit
+      const timer = setTimeout(() => {
+        setLoading(false);
+        setIsFirstVisit(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    } else {
+      
+      setLoading(false);
+      setIsFirstVisit(false);
+    }
   }, []);
 
-  if (loading) {
+  
+  if (loading && isFirstVisit) {
     return <LoadingSpinner text="LOADING" />;
   }
 
@@ -36,7 +59,7 @@ export default function Devices() {
           <h2 className="text-2xl font-bold text-foreground mb-2">Device Management</h2>
           <p className="text-muted-foreground">Monitor and manage all network devices</p>
         </div>
-        {/* Search and Filters */}
+        
         <div className="bg-card rounded-xl p-6 border border-border mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
@@ -75,7 +98,7 @@ export default function Devices() {
             </Select>
           </div>
         </div>
-        {/* Device Inventory */}
+        
         <DeviceInventory searchTerm={searchTerm} statusFilter={statusFilter} riskFilter={riskFilter} />
       </div>
     </div>

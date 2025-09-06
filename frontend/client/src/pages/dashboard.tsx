@@ -8,28 +8,45 @@ import OpenPortsTable from "@/components/security/open-ports-table";
 import CVEsTable from "@/components/security/cves-table";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
+// Track if pages have been visited before
+const pageVisits = {
+  dashboard: false,
+  devices: false
+};
+
 export default function Dashboard() {
   const { data: dashboardData, isLoading, refetch } = useSessionQuery<any>(
     "/api/dashboard",
     () => fetch("/api/dashboard", { credentials: "include" }).then(res => res.json())
   );
 
+  // Check if this is first visit
+  const [isFirstVisit, setIsFirstVisit] = useState(!pageVisits.dashboard);
+
   // Loading states for staged loading
-  const [showMain, setShowMain] = useState(false);
-  const [showPorts, setShowPorts] = useState(false);
-  const [showCVEs, setShowCVEs] = useState(false);
+  const [showMain, setShowMain] = useState(pageVisits.dashboard); // Start true if visited before
+  const [showPorts, setShowPorts] = useState(pageVisits.dashboard);
+  const [showCVEs, setShowCVEs] = useState(pageVisits.dashboard);
   const [isReloading, setIsReloading] = useState(false);
 
   // For manual scan trigger
   const [lastScanIp, setLastScanIp] = useState<string | null>(null);
 
-  // Staged loading effect
+  // Mark as visited on mount
+  useEffect(() => {
+    if (!pageVisits.dashboard) {
+      pageVisits.dashboard = true;
+    }
+  }, []);
+
+  // Staged loading effect - only for first visit or manual reload
   useEffect(() => {
     let mainTimeout: NodeJS.Timeout;
     let portsTimeout: NodeJS.Timeout;
     let cvesTimeout: NodeJS.Timeout;
 
-    if (!isLoading && !isReloading) {
+    // Only show loading sequence for first visit or manual reload
+    if ((!isLoading && isFirstVisit) || isReloading) {
       setShowMain(false);
       setShowPorts(false);
       setShowCVEs(false);
@@ -39,30 +56,23 @@ export default function Dashboard() {
           setShowPorts(true);
           cvesTimeout = setTimeout(() => {
             setShowCVEs(true);
+            if (isReloading) {
+              setIsReloading(false);
+            }
+            if (isFirstVisit) {
+              setIsFirstVisit(false);
+            }
           }, 10000); // 10s for CVEs
         }, 8000); // 8s for ports
       }, 30000); // 30s for main
-    } else if (isReloading) {
-      setShowMain(false);
-      setShowPorts(false);
-      setShowCVEs(false);
-      mainTimeout = setTimeout(() => {
-        setShowMain(true);
-        portsTimeout = setTimeout(() => {
-          setShowPorts(true);
-          cvesTimeout = setTimeout(() => {
-            setShowCVEs(true);
-            setIsReloading(false);
-          }, 10000);
-        }, 8000);
-      }, 30000);
     }
+
     return () => {
       clearTimeout(mainTimeout);
       clearTimeout(portsTimeout);
       clearTimeout(cvesTimeout);
     };
-  }, [isLoading, isReloading]);
+  }, [isLoading, isFirstVisit, isReloading]);
 
   // Manual scan handler (to be passed to ManualScan)
   const handleManualScan = useCallback((ip: string) => {
@@ -71,8 +81,8 @@ export default function Dashboard() {
     refetch();
   }, [refetch]);
 
-  // Show loading spinner if not ready
-  if (isLoading || isReloading || !showMain) {
+  // Show loading spinner only for first visit or reload
+  if (isLoading || (isFirstVisit && !showMain) || (isReloading && !showMain)) {
     return <LoadingSpinner text="LOADING" />;
   }
 
