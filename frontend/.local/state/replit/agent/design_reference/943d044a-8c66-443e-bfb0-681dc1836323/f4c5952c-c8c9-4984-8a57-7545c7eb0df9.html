@@ -1,0 +1,849 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard - Network Security Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                }
+            }
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(0 0% 7%);
+            --foreground: hsl(0 0% 95%);
+            --card: hsl(0 0% 12%);
+            --card-foreground: hsl(0 0% 95%);
+            --primary: hsl(172 100% 42%);
+            --primary-foreground: hsl(0 0% 7%);
+            --secondary: hsl(0 0% 15%);
+            --secondary-foreground: hsl(0 0% 95%);
+            --muted: hsl(0 0% 20%);
+            --muted-foreground: hsl(0 0% 63%);
+            --accent: hsl(172 100% 42%);
+            --accent-foreground: hsl(0 0% 7%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(0 0% 95%);
+            --border: hsl(0 0% 20%);
+            --input: hsl(0 0% 15%);
+            --ring: hsl(172 100% 42%);
+            --radius: 0.75rem;
+        }
+        
+        .progress-circle {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-circle circle {
+            transition: stroke-dasharray 0.5s ease-in-out;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground font-['Inter'] min-h-screen">
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center bg-background">
+        <div class="w-full max-w-md">
+            <!-- Logo and Branding -->
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-2xl text-primary-foreground"></i>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-foreground">CyberGuard</h1>
+                <p class="text-muted-foreground mt-2">Your secure gateway to digital experiences</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="bg-card p-8 rounded-xl border border-border">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-semibold text-foreground">Welcome Back</h2>
+                    <p class="text-muted-foreground mt-1">Sign in to your account to continue</p>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Username</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                            <input type="text" id="username" class="w-full pl-10 pr-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Email</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                            <input type="email" id="email" class="w-full pl-10 pr-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-2">Password</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                            <input type="password" id="password" class="w-full pl-10 pr-10 py-3 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter your password" required>
+                            <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" class="w-4 h-4 text-primary bg-input border-border rounded focus:ring-primary">
+                        <label for="remember" class="ml-2 text-sm text-muted-foreground">Remember me</label>
+                        <a href="#" class="ml-auto text-sm text-primary hover:underline">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-xs text-muted-foreground">
+                    By signing in, you agree to our <a href="#" class="text-primary hover:underline">Terms of Service</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden min-h-screen bg-background">
+        <!-- Header -->
+        <header class="bg-card border-b border-border p-4">
+            <div class="flex items-center justify-between max-w-7xl mx-auto">
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-primary-foreground"></i>
+                        </div>
+                        <h1 class="text-xl font-bold text-foreground">CyberGuard</h1>
+                    </div>
+                    
+                    <nav class="flex space-x-1">
+                        <button class="nav-btn active px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium" data-page="home">
+                            <i class="fas fa-home mr-2"></i>Home
+                        </button>
+                        <button class="nav-btn px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary" data-page="devices">
+                            <i class="fas fa-desktop mr-2"></i>Devices
+                        </button>
+                        <button class="nav-btn px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary" data-page="settings">
+                            <i class="fas fa-cog mr-2"></i>Settings
+                        </button>
+                    </nav>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-muted-foreground">Last updated: <span data-mock="true">10:07:51 PM</span></span>
+                    <button id="logoutBtn" class="text-muted-foreground hover:text-foreground">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Home Page -->
+        <div id="homePage" class="page-content">
+            <div class="max-w-7xl mx-auto p-6">
+                <!-- Dashboard Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Devices Card -->
+                    <div class="bg-card rounded-xl p-6 border border-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Devices</h3>
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                                <i class="fas fa-desktop text-primary-foreground text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold text-primary mb-2" data-bind="deviceCount">4</div>
+                        <div class="text-sm text-muted-foreground mb-3" data-mock="true">Active network devices</div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-arrow-up text-primary mr-2"></i>
+                            <span class="text-primary" data-mock="true">12%</span>
+                            <span class="text-muted-foreground ml-1" data-mock="true">vs last week</span>
+                        </div>
+                    </div>
+
+                    <!-- Open Ports Card -->
+                    <div class="bg-card rounded-xl p-6 border border-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Open Ports</h3>
+                            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-door-open text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold text-yellow-500 mb-2" data-bind="openPortsCount">4</div>
+                        <div class="text-sm text-muted-foreground mb-3" data-mock="true">Detected open ports</div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                            <span class="text-yellow-500" data-mock="true">High</span>
+                            <span class="text-muted-foreground ml-1" data-mock="true">attention required</span>
+                        </div>
+                    </div>
+
+                    <!-- Critical CVEs Card -->
+                    <div class="bg-card rounded-xl p-6 border border-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Critical CVEs</h3>
+                            <div class="w-12 h-12 bg-destructive rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-destructive-foreground text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="text-3xl font-bold text-destructive mb-2" data-bind="criticalCVECount">1</div>
+                        <div class="text-sm text-muted-foreground mb-3" data-mock="true">Critical vulnerabilities</div>
+                        <div class="flex items-center text-sm">
+                            <i class="fas fa-arrow-up text-destructive mr-2"></i>
+                            <span class="text-destructive" data-mock="true">5</span>
+                            <span class="text-muted-foreground ml-1" data-mock="true">new this week</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual Scan and Security Overview -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Manual Scan -->
+                    <div class="bg-card rounded-xl p-6 border border-border">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">Manual Scan</h3>
+                        <p class="text-muted-foreground mb-6" data-mock="true">Initiate a comprehensive network security scan to identify vulnerabilities and threats</p>
+                        
+                        <!-- Input field for scan target -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-2">Scan Target</label>
+                            <input type="text" id="scanTarget" class="w-full px-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter IP address or network range (e.g., 192.168.1.0/24)" required>
+                            <p class="text-xs text-muted-foreground mt-1">Specify the target for the security scan</p>
+                        </div>
+                        
+                        <button id="startScanBtn" class="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-all" disabled data-event="click:handleStartScan">
+                            <i class="fas fa-search mr-2"></i>Start Security Scan
+                        </button>
+                        
+                        <!-- Scan Status -->
+                        <div id="scanStatus" class="hidden mt-4 p-4 bg-secondary rounded-lg">
+                            <div class="flex items-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-3"></div>
+                                <span class="text-foreground">Scanning network...</span>
+                            </div>
+                            <div class="mt-2 bg-muted rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full transition-all duration-300" style="width: 0%" id="scanProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Overview -->
+                    <div class="bg-card rounded-xl p-6 border border-border">
+                        <h3 class="text-lg font-semibold text-foreground mb-6">Security Overview</h3>
+                        
+                        <div class="flex items-center justify-center mb-6">
+                            <div class="relative w-32 h-32">
+                                <svg class="progress-circle w-32 h-32" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="50" stroke="var(--muted)" stroke-width="8" fill="none"/>
+                                    <circle cx="60" cy="60" r="50" stroke="var(--primary)" stroke-width="8" fill="none" 
+                                            stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-foreground" data-bind="securityItemsCount">9</div>
+                                        <div class="text-xs text-muted-foreground" data-mock="true">Security Items</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-primary rounded-full mr-3"></div>
+                                    <span class="text-foreground" data-mock="true">Devices</span>
+                                </div>
+                                <span class="text-foreground font-medium" data-bind="devicesOverview">4</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-primary rounded-full mr-3"></div>
+                                    <span class="text-foreground" data-mock="true">Open Ports</span>
+                                </div>
+                                <span class="text-foreground font-medium" data-bind="openPortsOverview">4</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-primary rounded-full mr-3"></div>
+                                    <span class="text-foreground" data-mock="true">Critical CVEs</span>
+                                </div>
+                                <span class="text-foreground font-medium" data-bind="cvesOverview">1</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-muted rounded-full mr-3"></div>
+                                    <span class="text-foreground" data-mock="true">Other</span>
+                                </div>
+                                <span class="text-muted-foreground" data-mock="true">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Ports Table -->
+                <div class="bg-card rounded-xl p-6 border border-border mb-8">
+                    <h3 class="text-lg font-semibold text-foreground mb-2">Open Ports</h3>
+                    <p class="text-muted-foreground mb-6" data-mock="true">Network ports currently accessible</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Device ID</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">IP Address</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Open Ports</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Suspicious</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Severity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-foreground font-medium">DEV-001</td>
+                                    <td class="py-4 px-4 text-muted-foreground">192.168.1.100</td>
+                                    <td class="py-4 px-4 text-foreground">22, 80, 443, 3389</td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Yes</span>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">High</span>
+                                    </td>
+                                </tr>
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-foreground font-medium">DEV-002</td>
+                                    <td class="py-4 px-4 text-muted-foreground">192.168.1.150</td>
+                                    <td class="py-4 px-4 text-foreground">80, 443</td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">No</span>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Low</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Latest CVEs -->
+                <div class="bg-card rounded-xl p-6 border border-border">
+                    <h3 class="text-lg font-semibold text-foreground mb-2">Latest CVEs</h3>
+                    <p class="text-muted-foreground mb-6" data-mock="true">Recent vulnerabilities discovered</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">CVE ID</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Description</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Severity</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">CVSS</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-primary font-medium">CVE-2024-0001</td>
+                                    <td class="py-4 px-4 text-foreground">Remote code execution in Apache server</td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Critical</span>
+                                    </td>
+                                    <td class="py-4 px-4 text-foreground font-medium">9.8</td>
+                                </tr>
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-primary font-medium">CVE-2024-0002</td>
+                                    <td class="py-4 px-4 text-foreground">SQL injection vulnerability in MySQL</td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">High</span>
+                                    </td>
+                                    <td class="py-4 px-4 text-foreground font-medium">8.5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Page -->
+        <div id="devicesPage" class="page-content hidden">
+            <div class="max-w-7xl mx-auto p-6">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-foreground mb-2">Device Management</h2>
+                    <p class="text-muted-foreground" data-mock="true">Monitor and manage all network devices</p>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="bg-card rounded-xl p-6 border border-border mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                            <input type="text" class="w-full pl-10 pr-4 py-3 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Search devices..." data-mock="true">
+                        </div>
+                        <select class="px-4 py-3 bg-input border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                            <option>All Status</option>
+                            <option>Online</option>
+                            <option>Offline</option>
+                            <option>Warning</option>
+                        </select>
+                        <select class="px-4 py-3 bg-input border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                            <option>All Risk Levels</option>
+                            <option>Low</option>
+                            <option>Medium</option>
+                            <option>High</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Device Inventory -->
+                <div class="bg-card rounded-xl p-6 border border-border">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground mb-1">Device Inventory</h3>
+                            <p class="text-muted-foreground" data-mock="true">Complete list of network devices and their security status</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border">
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Device ID</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Network Info</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Manufacturer</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Firmware</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Risk Score</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Status</th>
+                                    <th class="text-left py-3 px-4 text-muted-foreground font-medium" data-mock="true">Last Scan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <!-- @MAP: devices.map(device => ( -->
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-foreground font-medium">RTR-001</td>
+                                    <td class="py-4 px-4">
+                                        <div class="text-foreground">192.168.1.1</div>
+                                        <div class="text-sm text-muted-foreground">Router - Gateway</div>
+                                    </td>
+                                    <td class="py-4 px-4 text-foreground">Cisco</td>
+                                    <td class="py-4 px-4 text-foreground">IOS 15.9.3</td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center">
+                                            <div class="w-12 bg-muted rounded-full h-2 mr-3">
+                                                <div class="bg-destructive h-2 rounded-full" style="width: 87%"></div>
+                                            </div>
+                                            <span class="text-destructive font-medium">87</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-wifi mr-1"></i>Online
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-muted-foreground">13 min ago</td>
+                                </tr>
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-foreground font-medium">SRV-002</td>
+                                    <td class="py-4 px-4">
+                                        <div class="text-foreground">192.168.1.50</div>
+                                        <div class="text-sm text-muted-foreground">Web Server</div>
+                                    </td>
+                                    <td class="py-4 px-4 text-foreground">Dell</td>
+                                    <td class="py-4 px-4 text-foreground">Ubuntu 22.04</td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center">
+                                            <div class="w-12 bg-muted rounded-full h-2 mr-3">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 53%"></div>
+                                            </div>
+                                            <span class="text-yellow-500 font-medium">53</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>Warning
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-muted-foreground">26 min ago</td>
+                                </tr>
+                                <tr data-mock="true">
+                                    <td class="py-4 px-4 text-foreground font-medium">IOT-003</td>
+                                    <td class="py-4 px-4">
+                                        <div class="text-foreground">192.168.1.250</div>
+                                        <div class="text-sm text-muted-foreground">IoT Sensor</div>
+                                    </td>
+                                    <td class="py-4 px-4 text-foreground">Raspberry Pi</td>
+                                    <td class="py-4 px-4 text-foreground">Raspbian 11</td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center">
+                                            <div class="w-12 bg-muted rounded-full h-2 mr-3">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 21%"></div>
+                                            </div>
+                                            <span class="text-green-500 font-medium">21</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-wifi mr-1"></i>Online
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-muted-foreground">1 hour ago</td>
+                                </tr>
+                                <!-- @END_MAP )) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="page-content hidden">
+            <div class="max-w-7xl mx-auto p-6">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-foreground mb-2">Settings</h2>
+                    <p class="text-muted-foreground" data-mock="true">Manage your account and application preferences</p>
+                </div>
+
+                <!-- User Management -->
+                <div class="bg-card rounded-xl p-6 border border-border mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-foreground mb-1">User Management</h3>
+                        </div>
+                        <button class="bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add User
+                        </button>
+                    </div>
+
+                    <div>
+                        <h4 class="text-md font-medium text-foreground mb-4" data-mock="true">Current Users</h4>
+                        <div class="space-y-4">
+                            <!-- @MAP: users.map(user => ( -->
+                            <div class="flex items-center justify-between p-4 bg-secondary rounded-lg" data-mock="true">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user text-primary-foreground"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-foreground font-medium">admin@cyberguard.com</div>
+                                        <div class="text-muted-foreground text-sm">Admin</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                    <button class="text-muted-foreground hover:text-foreground">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-secondary rounded-lg" data-mock="true">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-foreground font-medium">analyst@cyberguard.com</div>
+                                        <div class="text-muted-foreground text-sm">Analyst</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                    <button class="text-muted-foreground hover:text-foreground">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-secondary rounded-lg" data-mock="true">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-foreground font-medium">viewer@cyberguard.com</div>
+                                        <div class="text-muted-foreground text-sm">Viewer</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
+                                    <button class="text-muted-foreground hover:text-foreground">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="bg-card rounded-xl p-6 border border-border">
+                    <h3 class="text-lg font-semibold text-foreground mb-6">Security Settings</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Two-Factor Authentication -->
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-foreground font-medium" data-mock="true">Two-Factor Authentication</h4>
+                                <p class="text-muted-foreground text-sm" data-mock="true">Add an extra layer of security to your account</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+
+                        <!-- Session Timeout -->
+                        <div>
+                            <h4 class="text-foreground font-medium mb-2" data-mock="true">Session Timeout</h4>
+                            <select class="w-full px-4 py-3 bg-input border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                                <option>30 minutes</option>
+                                <option>1 hour</option>
+                                <option>2 hours</option>
+                                <option>4 hours</option>
+                                <option>8 hours</option>
+                            </select>
+                        </div>
+
+                        <!-- Email Notifications -->
+                        <div>
+                            <h4 class="text-foreground font-medium mb-4" data-mock="true">Email Notifications</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-foreground" data-mock="true">Critical vulnerabilities detected</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-foreground" data-mock="true">Weekly security reports</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // State management
+            let currentUser = null;
+            let isLoggedIn = false;
+            let scanInProgress = false;
+
+            // DOM elements
+            const loginPage = document.getElementById('loginPage');
+            const dashboard = document.getElementById('dashboard');
+            const loginForm = document.getElementById('loginForm');
+            const startScanBtn = document.getElementById('startScanBtn');
+            const scanTarget = document.getElementById('scanTarget');
+            const scanStatus = document.getElementById('scanStatus');
+            const scanProgress = document.getElementById('scanProgress');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const pageContents = document.querySelectorAll('.page-content');
+
+            // Initialize application
+            function init() {
+                // Check if user is already logged in (mock check)
+                if (localStorage.getItem('cyberguard_session')) {
+                    showDashboard();
+                } else {
+                    showLogin();
+                }
+
+                // Add event listeners
+                loginForm.addEventListener('submit', handleLogin);
+                logoutBtn.addEventListener('click', handleLogout);
+                startScanBtn.addEventListener('click', handleStartScan);
+                scanTarget.addEventListener('input', handleScanTargetChange);
+
+                // Navigation
+                navBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const page = e.target.closest('button').dataset.page;
+                        showPage(page);
+                    });
+                });
+            }
+
+            // Login handling
+            function handleLogin(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Mock authentication - in real app, this would call an API
+                if (username && email && password) {
+                    // Simulate loading
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+                    submitBtn.disabled = true;
+
+                    setTimeout(() => {
+                        // Store session
+                        localStorage.setItem('cyberguard_session', JSON.stringify({
+                            username,
+                            email,
+                            loginTime: Date.now()
+                        }));
+                        
+                        currentUser = { username, email };
+                        isLoggedIn = true;
+                        showDashboard();
+                    }, 1500);
+                } else {
+                    alert('Please fill in all fields');
+                }
+            }
+
+            // Logout handling
+            function handleLogout() {
+                localStorage.removeItem('cyberguard_session');
+                currentUser = null;
+                isLoggedIn = false;
+                showLogin();
+            }
+
+            // Scan target validation
+            function handleScanTargetChange() {
+                const target = scanTarget.value.trim();
+                startScanBtn.disabled = !target || scanInProgress;
+            }
+
+            // Start scan handling
+            function handleStartScan() {
+                const target = scanTarget.value.trim();
+                
+                if (!target) {
+                    alert('Please enter a scan target');
+                    return;
+                }
+
+                if (scanInProgress) {
+                    return;
+                }
+
+                scanInProgress = true;
+                startScanBtn.disabled = true;
+                startScanBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Scanning...';
+                scanStatus.classList.remove('hidden');
+
+                // Simulate scan progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        
+                        // Complete scan
+                        setTimeout(() => {
+                            scanInProgress = false;
+                            startScanBtn.disabled = false;
+                            startScanBtn.innerHTML = '<i class="fas fa-search mr-2"></i>Start Security Scan';
+                            scanStatus.classList.add('hidden');
+                            scanProgress.style.width = '0%';
+                            alert('Security scan completed! Check the results in the dashboard.');
+                        }, 1000);
+                    }
+                    
+                    scanProgress.style.width = progress + '%';
+                }, 500);
+            }
+
+            // Page navigation
+            function showPage(pageName) {
+                // Update nav buttons
+                navBtns.forEach(btn => {
+                    btn.classList.remove('active', 'bg-primary', 'text-primary-foreground');
+                    btn.classList.add('text-muted-foreground', 'hover:text-foreground', 'hover:bg-secondary');
+                });
+
+                const activeBtn = document.querySelector(`[data-page="${pageName}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-muted-foreground', 'hover:text-foreground', 'hover:bg-secondary');
+                    activeBtn.classList.add('active', 'bg-primary', 'text-primary-foreground');
+                }
+
+                // Show corresponding page
+                pageContents.forEach(page => {
+                    page.classList.add('hidden');
+                });
+
+                const targetPage = document.getElementById(pageName + 'Page');
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                }
+            }
+
+            // UI state management
+            function showLogin() {
+                loginPage.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+            }
+
+            function showDashboard() {
+                loginPage.classList.add('hidden');
+                dashboard.classList.remove('hidden');
+                showPage('home');
+            }
+
+            // Initialize the application
+            init();
+        })();
+    </script>
+</body>
+</html>

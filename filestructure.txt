@@ -1,0 +1,42 @@
+Laurel/
+├─ backend/
+│  ├─ app.py                  # Flask entry point
+│  ├─ routes/
+│  │  ├─ auth_routes.py       # Authentication APIs
+│  │  ├─ device_routes.py     # Device management APIs
+│  │  ├─ scan_routes.py       # Scan management APIs
+│  │  ├─ cve_routes.py        # CVE management APIs
+│  ├─ models/
+│  │  ├─ user_model.py        # Mongo schema for Users
+│  │  ├─ device_model.py      # Mongo schema for Devices
+│  │  ├─ scan_model.py        # Mongo schema for Scan results
+│  │  ├─ cve_model.py         # Mongo schema for CVEs
+│  ├─ services/
+│  │  ├─ scanner/             # Scanner module folder
+│  │  │  ├─ port_scanner.py   # Nmap / socket scanning logic
+│  │  │  ├─ vuln_scanner.py   # Firmware/endpoint scan logic
+│  │  ├─ cve_service.py       # Logic to fetch CVEs from NVD API
+│  │  ├─ auth_service.py      # JWT + user validation
+│  │  ├─ device_service.py    # Business logic for device CRUD
+│  │  ├─ scan_service.py      # Scan orchestration (calls scanner)
+│  ├─ utils/
+│  │  ├─ jwt_utils.py         # JWT helper functions
+│  │  ├─ db.py                # MongoDB connection helper
+│  ├─ config.py               # App config (Mongo URI, JWT secret)
+│  ├─ requirements.txt
+│
+├─ ml/
+│  ├─ models/                 # ML models for classification
+│  ├─ pipeline.py             # Preprocessing + model usage
+│
+├─ frontend/
+│  ├─ index.html              # Login + Home page
+│  ├─ css/
+│  │  ├─ style.css
+│  ├─ js/
+│  │  ├─ auth.js              # Calls /api/auth/login
+│  │  ├─ devices.js           # Calls /api/devices
+│  │  ├─ scan.js              # Calls /api/scan + /api/ports
+│  │  ├─ cves.js              # Calls /api/cves
+│
+└─ README.md
